@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'docker build -t myapp:latest .'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh 'echo "Running tests"'
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh 'docker tag myapp:latest dockerhubusername/myapp:latest'
+                sh 'docker push dockerhubusername/myapp:latest'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh 'kubectl apply -f kubernetes/'
+            }
+        }
+    }
+}
